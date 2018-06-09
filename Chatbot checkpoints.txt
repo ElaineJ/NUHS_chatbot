@@ -1,0 +1,49 @@
+Start, return AGE O
+-ask for age
+
+CheckSurgery , return CHECKSURGERY O
+-ask if underwent surgery
+
+CheckSurgeryType, return CheckSurgeryType O
+-which surgery underwent
+
+FLACC need:          O
+Score, redflag
+
+Flacc1, return FLACC1 O
+Flacc question1
+
+Flacc2, return FLACC2 O
+Flacc question2
+
+Flacc3, return FLACC3 O
+Flacc question3
+
+Flacc4, return FLACC4 O
+Flacc question4
+
+Flacc5, return FLACC5 O
+Flacc question5
+
+Circumcision1, return Circumcision1 O
+
+
+BillaryDrainage1, return BillaryDrainage1 O
+
+CheckHospital, return CHECKHOSPITAL O 
+
+Intake text:
+Constipation, intake entities.
+-Take message
+-Take relevant entity
+
+-Sequential text
+Condition on number to loop
+run my function and update this numbers for sequence and for redflag
+If number is redflag and yes=>result
+if is not redflag=>result
+
+Final addition:
+Records
+Time additions
+Did this help?

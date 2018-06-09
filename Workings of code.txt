@@ -1,0 +1,17 @@
+How the code works
+
+The chatbot is started by initializing the startprocess() function
+
+Misc:
+All question askings add /n for spacing
+for most question depending on yes and no they are made into different functions with if/else called writesomething
+When there is a redflag, the redflag function will be called and the redflag message will be printed in the function
+
+
+Dialogue flow:
+The different set of questions depending on conditions are in the functions
+Operation questions like circumcision and billary drainage are in interpreter file
+Condition questions are in Condition questions
+
+Rules for recording:
+All records are open and closed in the startprocess function only, though writing is done in the other functions.

@@ -1,0 +1,55 @@
+Circumcision questions
+Early on
+1.1 FLACC flag D, no continuation or if this helps after redflag
+1.2 Pus flag, D, no continuation or if this helps after redflag
+1.3 Blood pain killer flag=> D
+1.4 nothing happen, does it still give education resource?, do we move on to ask for their input
+
+Billary Drainage questions
+Early on
+redflag=>no continuation or if this helps after redflag
+1.4 nothing happen, does it still give education resource?, do we move on to ask for their input
+
+Admitted to hospital recently:
+1.Asthma D
+2.Gastro D
+3.Fits D
+4.Infection D
+5.no D
+6.Dont understand D
+
+2.Circumcision when captured in input
+2.1 FLACC flag
+2.2 Pus flag
+2.3 Blood pain killer flag
+2.4 nothing happen, does it continue?
+
+
+Billary Drainage
+2 when captured in input
+2.1 FLACC flag
+2.2 Drain flag
+2.3 string flag
+
+Constipation
+1.Redflag question D
+2.Condition>3 end convo D
+3.Condition<3 D
+4.Dont understand D
+Questions:
+If condition>3 dont ask nurse to call?, ask them if they still need help?
+
+SimilarSymptoms
+1.Yes Asthma,Gastro,Fits,Infection D
+2.No (must continue to help) D
+
+Overall
+Help function work
+1.Early on Circum/BD D
+2.Similar Symptoms
+3.Condition questions
+
+Questions to ask: 
+1.If red flag, we don't ask them if they find it helpful
+2.Circumcision=> if they are only bleeding, no redflags, pain medication help, do we still give them education resource?
+3.Circumcision and billary drainage=> if all conditions are wrong, do we move on to ask them the other questions to sieve out if it is constipation or not
