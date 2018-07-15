@@ -1,0 +1,13 @@
+Start time: 2018-07-15 22:14:08
+Age: 6-12mths
+Did child underwent surgery?: No
+Admittance to hospital recently?: Yes
+Admitted for : None
+Patient's problem that chatbot understood: my child constipated
+Condition detected: Constipation
+Pass motion frequency per week: >3
+Straining to pass motion?: No
+Blood in poo? :No
+Presence of large stool? :No
+End time: 2018-07-15 22:14:42
+Conclusion:Patient did not find it helpful and want to try again

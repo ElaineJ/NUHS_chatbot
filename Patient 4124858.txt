@@ -1,0 +1,11 @@
+Start time: 2018-07-15 22:18:22
+Age: 6-12mths
+Did child underwent surgery?: No
+Admittance to hospital recently?: No
+Patient's problem that chatbot understood: my child is bloated
+Condition detected: Constipation
+Pass motion frequency per week: >3
+Straining to pass motion?: Yes
+Blood in poo? :Yes
+End time: 2018-07-15 22:19:41
+Conclusion:Patient was urged to go A&E

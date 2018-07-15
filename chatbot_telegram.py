@@ -76,6 +76,7 @@ def CheckSurgery(bot, update,user_data):
     ts=time.time()
     st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
     user_data["starttime"]=st
+    user_data["attempt"]=0
     if 'helpfulcount' in user_data:
         del user_data['helpfulcount']
     user_data["helpfulness"]=1
@@ -262,7 +263,7 @@ def ToCircumPus(bot,update,user_data):
     
     user = update.message.from_user
     text = update.message.text
-    user_data["bleed?"]=text###to store from previous question
+    user_data["bleed"]=text###to store from previous question
     update.message.reply_text("Is there any pus around the wound? ", 
                             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
     return TOCIRCUMPUS
@@ -292,7 +293,7 @@ def EndOfCircumcision(bot,update,user_data):
     user = update.message.from_user
     text = update.message.text
     user_data["painmed"]=text
-    if user_data["bleed?"]=="Bleeding" and text=="No":
+    if user_data["bleed"]=="Bleeding" and text=="No":
         update.message.reply_text("Please come to our Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
         if user_data["helpfulcount"]==2:
             number=user_data["number"]
@@ -374,12 +375,11 @@ def CheckSimilar(bot, update, user_data):
     text = update.message.text
     user_data["Past Symptoms"]=text
     
-    if text=="None":
-        update.message.reply_text("Alright, what seems to be the problem?")
-    else:    
+    if text!="None":
         update.message.reply_text('Are the symptoms similar to the previous admission? ',
                                   reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
-    
+    else:    
+        update.message.reply_text("Alright, what seems to be the problem?")
     return CHECKSIMILAR
 
 def CheckReoccurence(bot, update, user_data):
@@ -403,30 +403,34 @@ def CheckReoccurence(bot, update, user_data):
         update.message.reply_text("Okay, please bring your child to A&E asap for assistance!")
         cd.recordnotagain(user_data)
         return ConversationHandler.END
+    elif text=="No":
+        update.message.reply_text("Alright, What seems to be the problem")
     else: #where i want to try again
         number=random.randrange(0,10000000)
-        cd.recordtryagain(number,user_data) #i shall open a file in this name but not close it
+        cd.recordtryagain(number,user_data) 
         age=user_data["age"]
         ts=time.time()
         starttime=datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
         Surgery=user_data['Surgery?']
-        if "score" in user_data:
+        if Surgery=="Yes":
             surgery=user_data['surgery']
             score=user_data["score"]
-            if "bleed" in user_data:
+            if surgery=="Circumcision":
                 bleed=user_data["bleed"]
                 puswound=user_data["puswound"]
                 painmed=user_data["painmed"]
-            if "drain" in user_data:
+            if surgery=="Biliary Drainage":
                     drain=user_data["drain"]
                     string=user_data["string"]
         if Surgery=="No":
             hospital=user_data["hospital?"]
-            if "past symptoms" in user_data:
-                pastsymptoms=user_data["past symptoms"]
-                similar=user_data["similar?"]
+            if hospital=="Yes":
+                pastsymptoms=user_data["Past Symptoms"]
+                if pastsymptoms!="None":
+                    similar=user_data["similar?"]
         user_data.clear()
         user_data["age"]=age
+        user_data["attempt"]=0
         user_data["starttime"]=starttime
         user_data["Surgery?"]=Surgery
         if Surgery=="Yes":
@@ -443,8 +447,9 @@ def CheckReoccurence(bot, update, user_data):
         if Surgery=="No":
             user_data["hospital?"]=hospital
             if hospital=="Yes":
-                user_data["past symptoms"]=pastsymptoms
-                user_data["similar?"]=similar
+                user_data["Past Symptoms"]=pastsymptoms
+                if pastsymptoms!="None":
+                    user_data["similar?"]=similar
         user_data["number"]=number
         user_data["helpfulness"]=1
         user_data["helpfulcount"]=1
@@ -459,6 +464,7 @@ def ProcessConditionStart(bot, update, user_data):
     reply_keyboardV=[["0-3",">3"]]
     user = update.message.from_user
     text = update.message.text
+    
     if user_data["helpfulness"]==1:
         try:    
             user_data["helpfulcount"]+=1
@@ -475,8 +481,10 @@ def ProcessConditionStart(bot, update, user_data):
     user_data["Dictionary"]=Dictionary  
     user_data["Dictionary"]=Dictionary 
     if Dictionary["entities"]==[]:
+        user_data["notunderstood"]=text
         user_data["entity"]=[]
     else:
+        user_data["understood"]=text
         user_data["entity"]=Dictionary["entities"][0]["entity"]
     
     
@@ -512,8 +520,21 @@ def ProcessConditionStart(bot, update, user_data):
                                          reply_markup=ReplyKeyboardMarkup(reply_keyboardV, one_time_keyboard=True))
         
     elif user_data["entity"]==[]:
-        update.message.reply_text("Sorry, i cannot understand, can you tell me your problem again? if i still cant understand you after many tries, please seek help at A&E")          
-    
+        user_data["attempt"]+=1
+        if user_data["attempt"]<2:
+            update.message.reply_text("Sorry, i cannot understand, can you tell me your problem again?")          
+        else: 
+            update.message.reply_text("Sorry, i cannot understand, please go to A&E for further medical help")
+            if "number" in user_data.keys():
+                number=user_data["number"]
+                tryagain=1
+                cd.recordattempt(number,user_data,tryagain)
+            else:
+                number=random.randrange(0,10000000)
+                tryagain=0
+                cd.recordattempt(number,user_data,tryagain)
+            user_data.clear()
+            return ConversationHandler.END
     return PROCESSCONDITIONSTART
 
 def ProcessCondition1(bot, update, user_data):
@@ -536,13 +557,14 @@ def ProcessCondition1(bot, update, user_data):
     #For constipation
     if user_data["entity"]=="Constipation":
         #Process redflag
-        redflag=[3,6]
+        redflag=[3,0]
         if user_data["SequenceCount"] in redflag:
             if user_data["SequenceCount"]==3:
                 user_data["bloodpoo"]=text
                 #sequence count not updated yet so get from 1 back
-            elif user_data["SequenceCount"]==6:
+            elif user_data["SequenceCount"]==0:
                 user_data["bloated"]=text 
+                print(user_data["SequenceCount"])
             if text=="Yes":
                 update.message.reply_text("Please come to our Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
                 if user_data["helpfulcount"]==2:
@@ -550,6 +572,7 @@ def ProcessCondition1(bot, update, user_data):
                     cd.recordred2(number,user_data)
                 else:
                     cd.recordend(user_data)
+                    user_data.clear()
                 return ConversationHandler.END
             else:
                 user_data["CorrectCount"]=cd.CorrectCount(user_data["entity"],user_data["value"],text,user_data["CorrectCount"],user_data["SequenceCount"])
@@ -587,6 +610,7 @@ def ProcessCondition1(bot, update, user_data):
                 cd.recordred2(number,user_data)
             else:
                 cd.recordend(user_data)
+                user_data.clear()
             return ConversationHandler.END
         elif user_data["Start"]>=7:
             update.message.reply_text("Constipation education resource")
@@ -595,6 +619,7 @@ def ProcessCondition1(bot, update, user_data):
                                       reply_markup=ReplyKeyboardMarkup(reply_keyboardH, one_time_keyboard=True))
     
     elif user_data["entity"]=="Gastroenteritis":
+        
         if "food" in user_data:
             if user_data["food"]==1:
                 user_data["food"]=text
@@ -611,6 +636,7 @@ def ProcessCondition1(bot, update, user_data):
                         #print(user_data["helpfulcount"])
                         cd.recordend(user_data)
                     update.message.reply_text("Please come to our Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
+                    user_data.clear()
                     return ConversationHandler.END
                 elif text=="Yes" and user_data["SequenceCount"]==0:
                     user_data["drink"]=text
@@ -622,6 +648,7 @@ def ProcessCondition1(bot, update, user_data):
                         cd.recordred2(number,user_data)#second time red
                     else:
                         cd.recordend(user_data)# first time red
+                    user_data.clear()
                     return ConversationHandler.END
                 else:
                     if user_data["SequenceCount"]==2:
@@ -638,7 +665,7 @@ def ProcessCondition1(bot, update, user_data):
                     if user_data["SequenceCount"]==1:
                         user_data["diarrheaNo"]=text
                     elif user_data["SequenceCount"]==3:
-                        user_data["vomitingNo"]=text
+                        user_data["vomites"]=text
                     update.message.reply_text("Please come to our Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
                     if user_data["helpfulcount"]==2:
                         number=user_data["number"]
@@ -647,8 +674,9 @@ def ProcessCondition1(bot, update, user_data):
                         if user_data["SequenceCount"]==1:
                             user_data["diarrheaNo"]=text
                         elif user_data["SequenceCount"]==3:
-                            user_data["vomitingNo"]=text
+                            user_data["vomites"]=text
                         cd.recordend(user_data)
+                    user_data.clear()
                     return ConversationHandler.END
             #giving relevant advice
             Advice=""
@@ -683,7 +711,21 @@ def ProcessCondition1(bot, update, user_data):
                                           reply_markup=ReplyKeyboardMarkup(reply_keyboardH, one_time_keyboard=True))
         else:
             user_data["food"]=1
-            update.message.reply_text("Have the child been exposed to new food? if so what are they?")
+            redflag=[2,4,5,6,0]
+            redflagage=['0-3mths', '3-6mths']
+            redflaganswers=["3-6",">6",">3"]
+            if user_data["age"] in redflagage:
+                if text in redflaganswers:
+                    if user_data["SequenceCount"]==1:
+                        user_data["diarrheaNo"]=text
+                    elif user_data["SequenceCount"]==3:
+                        user_data["vomites"]=text
+                    update.message.reply_text("Please come to our Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
+                    return ConversationHandler.END
+                else:
+                    update.message.reply_text("Have the child been exposed to new food? if so what are they?")
+            else:
+                update.message.reply_text("Have the child been exposed to new food? if so what are they?")
     return PROCESSCONDITION1    
     
 def Helpful(bot,update,user_data):
@@ -701,6 +743,7 @@ def Helpful(bot,update,user_data):
         else:
             number=user_data["number"]
             cd.recordhelpful2(number,user_data) #write into saved file and close it
+        user_data.clear()
         return ConversationHandler.END
     elif text=="Not Helpful":
         if user_data["helpfulcount"]==0:
@@ -713,6 +756,7 @@ def Helpful(bot,update,user_data):
             number=user_data["number"]
             cd.recordnothelpful(number,user_data) #write into saved file and close it
             update.message.reply_text("I am sorry, please bring your child to A&E asap to be seen by the doctor!") 
+            user_data.clear()
             return ConversationHandler.END
     return HELPFUL
 
@@ -823,10 +867,10 @@ def main():
             TOBiliarySTRING:[RegexHandler('^(Yes|No)$',BiliaryDrainageEnd,pass_user_data=True)],
             BiliaryDRAINAGEEND:[RegexHandler('^(Helpful|Not Helpful)$',Helpful,pass_user_data=True)],
         #admit to hospital
-            CHECKCONDITION: [RegexHandler('^(Asthma|Gastroenteritis|Severe Infection|Fits)$', CheckSimilar, pass_user_data=True),
+            CHECKCONDITION: [RegexHandler('^(Asthma|Gastroenteritis|Severe Infection|Fits|None)$', CheckSimilar, pass_user_data=True),
                              MessageHandler(Filters.text, ProcessConditionStart, pass_user_data=True)],
-            CHECKSIMILAR: [MessageHandler(Filters.text, ProcessConditionStart, pass_user_data=True),
-                           RegexHandler('^(Yes|No)$', CheckReoccurence, pass_user_data=True)],
+            CHECKSIMILAR: [RegexHandler('^(Yes|No)$', CheckReoccurence, pass_user_data=True),
+                           MessageHandler(Filters.text, ProcessConditionStart, pass_user_data=True)],
             CHECKREOCCURENCE: [MessageHandler(Filters.text, ProcessConditionStart, pass_user_data=True)],
             
             #To link to interpreter.

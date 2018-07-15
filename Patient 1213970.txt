@@ -1,0 +1,13 @@
+Start time: 2018-07-16 00:08:12
+Age: 6-12mths
+Did child underwent surgery?: No
+Admittance to hospital recently?: No
+Patient's problem that chatbot understood: vomitting a lot
+Condition detected: Gastroenteritis
+Exposure to new food: w
+Presence of blood in diarrhea: No
+Presence of blood in vomit: No
+Presence of greenish fluid in vomit: No
+Vomit shoots out?: No
+End time: 2018-07-16 00:09:04
+Conclusion:Patient was urged to go A&E

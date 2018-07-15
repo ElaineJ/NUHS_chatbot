@@ -1,0 +1,9 @@
+Start time: 2018-07-16 00:19:13
+Age: 0-3mths
+Did child underwent surgery?: No
+Admittance to hospital recently?: No
+Admitted for : Gastroenteritis
+Similar Symptoms to previous admission? :Yes
+Patient's problem that chatbot understood: my child has been having diarrhea
+Condition detected: Gastroenteritis
+Exposure to new food: correct

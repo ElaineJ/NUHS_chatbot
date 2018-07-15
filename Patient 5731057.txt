@@ -1,0 +1,10 @@
+Start time: 2018-07-16 00:25:53
+Age: 0-3mths
+Did child underwent surgery?: No
+Admittance to hospital recently?: No
+Patient's problem that chatbot understood: my child has diarrhea
+Condition detected: Gastroenteritis
+Exposure to new food: food
+Presence of blood in diarrhea: No
+End time: 2018-07-16 00:26:38
+Conclusion:Patient was urged to go A&E

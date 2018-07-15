@@ -1,0 +1,9 @@
+Start time: 2018-07-16 00:03:54
+Age: 3-6mths
+Did child underwent surgery?: No
+Admittance to hospital recently?: No
+Patient's problem that chatbot understood: my child has blood in diarrhea
+Condition detected: Gastroenteritis
+Exposure to new food: yes
+End time: 2018-07-16 00:04:28
+Conclusion:Patient got a redflag the second time, sent to A&E

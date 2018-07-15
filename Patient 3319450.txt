@@ -1,0 +1,14 @@
+Start time: 2018-07-16 00:34:36
+Age: 3-6mths
+Did child underwent surgery?: No
+Admittance to hospital recently?: Yes
+Admitted for : Severe Infection
+Similar Symptoms to previous admission? :No
+Patient's problem that chatbot understood: my child is not passing motion
+Condition detected: Constipation
+Pass motion frequency per week: 0
+Straining to pass motion?: Yes
+Blood in poo? :No
+Presence of large stool? :No
+End time: 2018-07-16 00:35:45
+Conclusion:Patient was urged to go A&E

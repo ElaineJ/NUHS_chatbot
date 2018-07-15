@@ -1,0 +1,7 @@
+Start time: 2018-07-15 22:03:39
+Age: 0-3mths
+Did child underwent surgery?: Yes
+Type of Surgery: Biliary Drainage
+FLACC score: 10
+End time: 2018-07-15 22:03:55
+Conclusion:Patient was urged to go A&E

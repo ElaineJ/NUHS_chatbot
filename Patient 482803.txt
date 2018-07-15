@@ -1,0 +1,9 @@
+Start time: 2018-07-16 00:27:00
+Age: 6-12mths
+Did child underwent surgery?: No
+Admittance to hospital recently?: No
+Patient's problem that chatbot understood: child has been vomitting
+Condition detected: Gastroenteritis
+Exposure to new food: >3
+End time: 2018-07-16 00:27:31
+Conclusion:Patient was urged to go A&E
