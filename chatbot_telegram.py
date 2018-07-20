@@ -521,7 +521,7 @@ def ProcessConditionStart(bot, update, user_data):
         
     elif user_data["entity"]==[]:
         user_data["attempt"]+=1
-        if user_data["attempt"]<2:
+        if user_data["attempt"]<3:
             update.message.reply_text("Sorry, i cannot understand, can you tell me your problem again?")          
         else: 
             update.message.reply_text("Sorry, i cannot understand, please go to A&E for further medical help")

@@ -1,8 +1,0 @@
-Start time: 2018-07-16 00:18:58
-Age: 6-12mths
-Did child underwent surgery?: No
-Admittance to hospital recently?: Yes
-Admitted for : Gastroenteritis
-Similar Symptoms to previous admission? :Yes
-End time: 2018-07-16 00:19:08
-Conclusion:Patient was urged to go A&E
