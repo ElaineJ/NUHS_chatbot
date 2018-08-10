@@ -69,6 +69,7 @@ def start(bot,update):
 
 def CheckSurgery(bot, update,user_data):
     reply_keyboard = [['Yes', 'No']]
+    reply_keyboard2 = [['0-3mths', '3-6mths', '6-12mths'],['12-24mths','2-5yrs','5-10yrs'],['More than 10yrs']]
     user = update.message.from_user #user idea
     text = update.message.text #text from previous state
     user_data["age"]=text #store age for later use
@@ -90,6 +91,10 @@ def CheckSurgery(bot, update,user_data):
                                   reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
     elif text=="No":
         return ConversationHandler.END
+    else:
+        update.message.reply_text("Please chose an option from the button,"
+                                  "Can you tell me how old your child is ?",
+                                 reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
 
     return CHECKSURGERY
 
@@ -115,6 +120,8 @@ def CheckSurgeryType(bot, update,user_data):
     elif text == 'No':
         update.message.reply_text('Has your child been admitted to hospital recently? ',
                                   reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+    else:
+        return ConversationHandler.END
 
     return CHECKSURGERYTYPE
 
@@ -135,22 +142,15 @@ def Flacc1(bot,update,user_data):
     user = update.message.from_user
     text = update.message.text
     user_data['surgery']=text
+    
+    if text not in ['Circumcision', 'Biliary Drainage']:
+        return ConversationHandler.END
 
     update.message.reply_text("Observing your child's expression he/she shows signs of:  "
                               "\n1. smiling or showing no particular expression"
                               "\n2. shows the occasional grimice or frown or is withdrawn or uninterested "
                               "\n3. Is frequently quivering his/her chin or is clenching his/her jaw", 
-                            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
-    
-#    update.message.reply_text("Observing your child's leg movements he/she shows signs of:  "
-#                              "\n1. Normal position or relaxed"
-#                              "\n2. Uneasiness, restless or tense "
-#                              "\n3. Kicking, or legs drawn up", 
-#                            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
-
-    
-
-
+                            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))      
 
 
 
@@ -162,6 +162,8 @@ def Flacc2(bot,update,user_data):
     user = update.message.from_user
     text = update.message.text
     user_data['score']=int(text)-1
+    if text not in ['1','2','3']:
+        return ConversationHandler.END
     update.message.reply_text("Observing your child's leg movements he/she shows signs of:"
                               "\n1. Normal position or relaxed"
                               "\n2. Uneasiness, restless or tense "
@@ -179,8 +181,10 @@ def Flacc3(bot,update,user_data):
     user = update.message.from_user
     text = update.message.text
     
+    if text not in ['1','2','3']:
+        return ConversationHandler.END
     #score=Flacc2[1]
-    user_data['score']=int(text)-1+user_data['score']   
+    user_data['score']=int(text)-1+user_data['score']  
 
 
     update.message.reply_text( "Observing your child's body behaviour he/she shows signs of: "
@@ -202,6 +206,8 @@ def Flacc4(bot,update,user_data):
     #logger.info("Child had done surgery: %s: %s", update.message.text)
     user_data['score']=int(text)-1+user_data['score']
     
+    if text not in ['1','2','3']:
+        return ConversationHandler.END
     update.message.reply_text("Observing your child's cry he/she shows signs of:   "
                               "\n1. Not crying"
                               "\n2. Moaning or whimpering; occasional complaint "
@@ -218,8 +224,9 @@ def Flacc5(bot,update,user_data):
 
     user_data['score']=int(text)-1+user_data['score']
     score=user_data['score']
-
-
+    
+    if text not in ['1','2','3']:
+        return ConversationHandler.END
     update.message.reply_text("How consolable is your child? he/she is: "
                               "\n1. Content, relaxed"
                               "\n2. Reassured by occasional touching, hugging or being talked to, distractible "
@@ -238,7 +245,8 @@ def ToCircumBiliary(bot,update,user_data):
     user_data['score']=int(text)-1+user_data['score']
     score=user_data['score']
     surgery=user_data['surgery']
-    
+    if text not in ['1','2','3']:
+        return ConversationHandler.END
 
     if score<6:
         if surgery=="Circumcision":
@@ -254,10 +262,11 @@ def ToCircumBiliary(bot,update,user_data):
             cd.recordred2(number,user_data)
         else:
             cd.recordend(user_data)
-        update.message.reply_text("Please come to our Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
+        update.message.reply_text("Please come to our NUH Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
+        user_data.clear()
         return ConversationHandler.END
     return TOCIRCUMBiliary
-
+############################replace with conversation handler end do until here
 def ToCircumPus(bot,update,user_data):
     reply_keyboard = [['Yes','No']]
     
@@ -275,12 +284,13 @@ def ToPainKiller(bot,update,user_data):
     text = update.message.text
     user_data["puswound"]=text
     if text=="Yes":
-        update.message.reply_text("Please come to our Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
+        update.message.reply_text("Please come to our NUH Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
         if user_data["helpfulcount"]==2:
             number=user_data["number"]
             cd.recordred2(number,user_data)
         else:
             cd.recordend(user_data)
+        user_data.clear()
         return ConversationHandler.END
     else:
         update.message.reply_text("Does giving the child prescribed pain medication help? ", 
@@ -294,12 +304,13 @@ def EndOfCircumcision(bot,update,user_data):
     text = update.message.text
     user_data["painmed"]=text
     if user_data["bleed"]=="Bleeding" and text=="No":
-        update.message.reply_text("Please come to our Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
+        update.message.reply_text("Please come to our NUH Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
         if user_data["helpfulcount"]==2:
             number=user_data["number"]
             cd.recordred2(number,user_data)
         else:
             cd.recordend(user_data)
+        user_data.clear()
         return ConversationHandler.END
     else:
         update.message.reply_text("Educational resource on wound dressing")
@@ -315,12 +326,13 @@ def ToBiliaryString(bot,update,user_data):
     text = update.message.text
     user_data["drain"]=text
     if text=="No":
-        update.message.reply_text("Please come to our Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
+        update.message.reply_text("Please come to our NUH Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
         if user_data["helpfulcount"]==2:
             number=user_data["number"]
             cd.recordred2(number,user_data)
         else:
             cd.recordend(user_data)
+        user_data.clear()
         return ConversationHandler.END
     elif text=="Yes":
         update.message.reply_text("Is the string around the drain intact? ", 
@@ -339,12 +351,13 @@ def BiliaryDrainageEnd(bot,update,user_data):
         update.message.reply_text("Was this helpful?", 
                             reply_markup=ReplyKeyboardMarkup(reply_keyboardH, one_time_keyboard=True))
     elif text=="No":
-        update.message.reply_text("Please come to our Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
+        update.message.reply_text("Please come to our NUH Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
         if user_data["helpfulcount"]==2:
             number=user_data["number"]
             cd.recordred2(number,user_data)
         else:
             cd.recordend(user_data)
+        user_data.clear()
         return ConversationHandler.END
     return BiliaryDRAINAGEEND
 
@@ -392,15 +405,16 @@ def CheckReoccurence(bot, update, user_data):
         previous=user_data["Past Symptoms"]
     
     if text=="Yes":
-        update.message.reply_text('A reoccurence of '+previous+" can have serious implications. Please come to our Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
+        update.message.reply_text('A reoccurence of '+previous+" can have serious implications. Please come to our NUH Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
         if user_data["helpfulcount"]==2:
             number=user_data["number"]
             cd.recordred2(number,user_data)
         else:
             cd.recordend(user_data)
+        user_data.clear()
         return ConversationHandler.END
     elif text=="Stop":
-        update.message.reply_text("Okay, please bring your child to A&E asap for assistance!")
+        update.message.reply_text("Okay, please bring your child to NUH A&E asap for assistance!")
         cd.recordnotagain(user_data)
         return ConversationHandler.END
     elif text=="No":
@@ -499,9 +513,11 @@ def ProcessConditionStart(bot, update, user_data):
             user_data["Start"]+=1
             user_data["SequenceCount"]=output[1]
             if user_data["SequenceCount"]==1: #speical markup for how many times pass motion
+                user_data["keyboard"]=reply_keyboardC
                 update.message.reply_text(question,
                                           reply_markup=ReplyKeyboardMarkup(reply_keyboardC, one_time_keyboard=True))
             else: # everything else
+               user_data["keyboard"]=reply_keyboard
                update.message.reply_text(question,
                                          reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
     
@@ -513,18 +529,20 @@ def ProcessConditionStart(bot, update, user_data):
             user_data["Start"]+=1
             user_data["SequenceCount"]=output[1]
             if user_data["SequenceCount"]==1: #speical markup for Diarrhea
+                user_data["keyboard"]=reply_keyboardD
                 update.message.reply_text(question,
                                           reply_markup=ReplyKeyboardMarkup(reply_keyboardD, one_time_keyboard=True))
             else: # everything else
+               user_data["keyboard"]=reply_keyboardV
                update.message.reply_text(question,
                                          reply_markup=ReplyKeyboardMarkup(reply_keyboardV, one_time_keyboard=True))
         
     elif user_data["entity"]==[]:
         user_data["attempt"]+=1
         if user_data["attempt"]<3:
-            update.message.reply_text("Sorry, i cannot understand, can you tell me your problem again?")          
+            update.message.reply_text("Sorry, i cannot understand, please click if buttons are provided or i may not have understood you, can you tell me your problem again?")          
         else: 
-            update.message.reply_text("Sorry, i cannot understand, please go to A&E for further medical help")
+            update.message.reply_text("Sorry, i cannot understand, please go to NUH A&E for further medical help")
             if "number" in user_data.keys():
                 number=user_data["number"]
                 tryagain=1
@@ -549,7 +567,22 @@ def ProcessCondition1(bot, update, user_data):
     
     Dictionary=user_data["Dictionary"]
     
-    
+    if text not in user_data["keyboard"][0]:
+        try:
+            if user_data["correctbutton"]==1:
+                user_data["correctbutton"]=0
+                pass
+            else:
+                print(text)
+                print(user_data["keyboard"])
+                update.message.reply_text("Sorry, i can't understand you, please press a button when it is provided. Key in /start to try again")
+                user_data.clear()
+                return ConversationHandler.END
+        except KeyError:
+            update.message.reply_text("Sorry, i can't understand you, please press a button when it is provided. Key in /start to try again")
+            user_data.clear()
+            return ConversationHandler.END
+        
     #from processtart, the first correctcount process, processess with the original sequence count
     #after that it is from original sequence count+1
     
@@ -566,13 +599,13 @@ def ProcessCondition1(bot, update, user_data):
                 user_data["bloated"]=text 
                 print(user_data["SequenceCount"])
             if text=="Yes":
-                update.message.reply_text("Please come to our Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
+                update.message.reply_text("Please come to our NUH Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
                 if user_data["helpfulcount"]==2:
                     number=user_data["number"]
                     cd.recordred2(number,user_data)
                 else:
                     cd.recordend(user_data)
-                    user_data.clear()
+                user_data.clear()
                 return ConversationHandler.END
             else:
                 user_data["CorrectCount"]=cd.CorrectCount(user_data["entity"],user_data["value"],text,user_data["CorrectCount"],user_data["SequenceCount"])
@@ -589,6 +622,7 @@ def ProcessCondition1(bot, update, user_data):
             user_data["value"]=text
             if user_data["SequenceCount"]==1: #special markup for how many times pass motion
                 user_data["SequenceCount"]=output[1]
+                user_data["keyboard"]=reply_keyboardC
                 update.message.reply_text(question,
                                           reply_markup=ReplyKeyboardMarkup(reply_keyboardC, one_time_keyboard=True))
             else: # everything else
@@ -601,16 +635,17 @@ def ProcessCondition1(bot, update, user_data):
                 elif user_data["SequenceCount"]==5:
                     user_data["largestool?"]=text
                 user_data["SequenceCount"]=output[1]
+                user_data["keyboard"]=reply_keyboard
                 update.message.reply_text(question,
                                           reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
         elif user_data["CorrectCount"]>=3:
-            update.message.reply_text("Please come to our Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
+            update.message.reply_text("Please come to our NUH Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
             if user_data["helpfulcount"]==2:
                 number=user_data["number"]
                 cd.recordred2(number,user_data)
             else:
                 cd.recordend(user_data)
-                user_data.clear()
+            user_data.clear()
             return ConversationHandler.END
         elif user_data["Start"]>=7:
             update.message.reply_text("Constipation education resource")
@@ -635,14 +670,14 @@ def ProcessCondition1(bot, update, user_data):
                     else:
                         #print(user_data["helpfulcount"])
                         cd.recordend(user_data)
-                    update.message.reply_text("Please come to our Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
+                    update.message.reply_text("Please come to our NUH Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
                     user_data.clear()
                     return ConversationHandler.END
                 elif text=="Yes" and user_data["SequenceCount"]==0:
                     user_data["drink"]=text
                     update.message.reply_text("Advice for drink water\n")
                 elif text=="Yes" and user_data["SequenceCount"]!=0:
-                    update.message.reply_text("Please come to our Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
+                    update.message.reply_text("Please come to our NUH Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
                     if user_data["helpfulcount"]==2:
                         number=user_data["number"]
                         cd.recordred2(number,user_data)#second time red
@@ -666,7 +701,7 @@ def ProcessCondition1(bot, update, user_data):
                         user_data["diarrheaNo"]=text
                     elif user_data["SequenceCount"]==3:
                         user_data["vomites"]=text
-                    update.message.reply_text("Please come to our Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
+                    update.message.reply_text("Please come to our NUH Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
                     if user_data["helpfulcount"]==2:
                         number=user_data["number"]
                         cd.recordred2(number,user_data)
@@ -696,21 +731,26 @@ def ProcessCondition1(bot, update, user_data):
                 if user_data["SequenceCount"]==1 or user_data["SequenceCount"]==3: #special markup for how many times pass motion
                     user_data["SequenceCount"]=output[1]
                     if user_data["SequenceCount"]==1:
+                        user_data["keyboard"]=reply_keyboardD
                         update.message.reply_text(question,
                                                   reply_markup=ReplyKeyboardMarkup(reply_keyboardD, one_time_keyboard=True))
                     else:
+                        user_data["keyboard"]=reply_keyboardV
                         update.message.reply_text(question,
                                                   reply_markup=ReplyKeyboardMarkup(reply_keyboardV, one_time_keyboard=True))
                 else:
+                    user_data["keyboard"]=reply_keyboard
                     update.message.reply_text(question,
                                                   reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
             elif user_data["Start"]>=8:
                 #update.message.reply_text("Constipation education resource")
+                user_data["keyboard"]=reply_keyboardH
                 time.sleep(10)
                 update.message.reply_text("Was this helpful?",
                                           reply_markup=ReplyKeyboardMarkup(reply_keyboardH, one_time_keyboard=True))
         else:
             user_data["food"]=1
+            user_data["correctbutton"]=1
             redflag=[2,4,5,6,0]
             redflagage=['0-3mths', '3-6mths']
             redflaganswers=["3-6",">6",">3"]
@@ -720,7 +760,8 @@ def ProcessCondition1(bot, update, user_data):
                         user_data["diarrheaNo"]=text
                     elif user_data["SequenceCount"]==3:
                         user_data["vomites"]=text
-                    update.message.reply_text("Please come to our Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
+                    update.message.reply_text("Please come to our NUH Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
+                    user_data.clear()
                     return ConversationHandler.END
                 else:
                     update.message.reply_text("Have the child been exposed to new food? if so what are they?")
@@ -755,7 +796,7 @@ def Helpful(bot,update,user_data):
         else:  
             number=user_data["number"]
             cd.recordnothelpful(number,user_data) #write into saved file and close it
-            update.message.reply_text("I am sorry, please bring your child to A&E asap to be seen by the doctor!") 
+            update.message.reply_text("I am sorry, please bring your child to NUH A&E asap to be seen by the doctor!") 
             user_data.clear()
             return ConversationHandler.END
     return HELPFUL
@@ -846,7 +887,8 @@ def main():
         states={
             AGE: [RegexHandler('^(0-3mths|3-6mths|6-12mths|12-24mths|2-5yrs|5-10yrs|More than 10yrs)$', CheckSurgery,pass_user_data=True)],
 
-            CHECKSURGERY: [RegexHandler('^(Yes|No)$', CheckSurgeryType,pass_user_data=True)],
+            CHECKSURGERY: [RegexHandler('^(Yes|No)$', CheckSurgeryType,pass_user_data=True),
+                           RegexHandler('^(0-3mths|3-6mths|6-12mths|12-24mths|2-5yrs|5-10yrs|More than 10yrs)$', CheckSurgery,pass_user_data=True)],
 
             CHECKSURGERYTYPE: [RegexHandler('^(Circumcision|Biliary Drainage)$', Flacc1,pass_user_data=True),
                                RegexHandler('^(Yes|No)$', CheckCondition,pass_user_data=True)],

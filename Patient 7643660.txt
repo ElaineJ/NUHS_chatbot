@@ -1,0 +1,9 @@
+Start time: 2018-07-16 11:51:40
+Age: 5-10yrs
+Did child underwent surgery?: No
+Admittance to hospital recently?: No
+Patient's problem that chatbot understood: my child laosai
+Condition detected: Gastroenteritis
+Exposure to new food: food
+End time: 2018-07-16 11:51:56
+Conclusion:Patient was urged to go A&E
