@@ -313,7 +313,7 @@ def EndOfCircumcision(bot,update,user_data):
         user_data.clear()
         return ConversationHandler.END
     else:
-        update.message.reply_text("Educational resource on wound dressing")
+        update.message.reply_text("Ok, your child should be alright, here is a guide on how to take care of your child's wound after circumcision https://www.youtube.com/watch?v=xdrvq_10vTM, the doctor will get back to you when he/she is available should there be an issue, take care!")
         time.sleep(10)
         update.message.reply_text("Was this helpful?", 
                             reply_markup=ReplyKeyboardMarkup(reply_keyboardH, one_time_keyboard=True))
@@ -346,7 +346,7 @@ def BiliaryDrainageEnd(bot,update,user_data):
     text = update.message.text
     user_data["string"]=text
     if text=="Yes":
-        update.message.reply_text("Educational resource on Biliary Drainage ") 
+        update.message.reply_text("Ok, your child should be alright, here is a guide on how to drain the bile https://www.youtube.com/watch?v=i7F0noBFAHI, the doctor will get back to you when he/she is available should there be an issue, take care!") 
         time.sleep(10)
         update.message.reply_text("Was this helpful?", 
                             reply_markup=ReplyKeyboardMarkup(reply_keyboardH, one_time_keyboard=True))
@@ -648,7 +648,7 @@ def ProcessCondition1(bot, update, user_data):
             user_data.clear()
             return ConversationHandler.END
         elif user_data["Start"]>=7:
-            update.message.reply_text("Constipation education resource")
+            update.message.reply_text("Alright, here are somethings you can do for your child https://www.youtube.com/watch?v=5z8bVI5SSMs, should there be no further issues, please bring your child to the nearest GP tomorrow!")
             time.sleep(10)
             update.message.reply_text("Was this helpful?",
                                       reply_markup=ReplyKeyboardMarkup(reply_keyboardH, one_time_keyboard=True))
@@ -675,7 +675,7 @@ def ProcessCondition1(bot, update, user_data):
                     return ConversationHandler.END
                 elif text=="Yes" and user_data["SequenceCount"]==0:
                     user_data["drink"]=text
-                    update.message.reply_text("Advice for drink water\n")
+                    update.message.reply_text("Alright, here are somethings you can try to get your child to drink water https://www.youtube.com/watch?v=9_BOzeAw3Qc\n, should there be no further issues, please bring your child to the nearest GP tomorrow")
                 elif text=="Yes" and user_data["SequenceCount"]!=0:
                     update.message.reply_text("Please come to our NUH Childrens' Emergency at 5 Lower Kent Ridge Road, 119074. One of our Specialist Nurse will be calling your registered Phone Number to check on you in 10 mins.")
                     if user_data["helpfulcount"]==2:
@@ -715,7 +715,7 @@ def ProcessCondition1(bot, update, user_data):
                     return ConversationHandler.END
             #giving relevant advice
             Advice=""
-            AdviceDict={'1':"Advice for diarrhea\n", '3':"Advice for vomit\n"}
+            AdviceDict={'1':"Here is what you can take note of https://www.youtube.com/watch?v=EimyZ98npkE ,if your child's diarrhea is not getting better be sure to vist your local GP tomorrow!\n", '3':"Here is what you can take note of https://www.youtube.com/watch?v=KxEKAdjlUhk ,if your child's vomiting is not getting better be sure to vist your local GP tomorrow!\n"}
             AdviceSequence=[1,3]
             if user_data["SequenceCount"] in AdviceSequence:
                 Advice=AdviceDict[str(user_data["SequenceCount"])]

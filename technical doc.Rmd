@@ -26,6 +26,9 @@ RasaNLU: The NLP capabilities of the chatbot comes from this library. It is used
 
 Workings of Code
 Chatbot_telegram:
+
+To download telegram bot api go to https://github.com/python-telegram-bot/python-telegram-bot and read ReadMe 
+
 Recording
 Telegram API stores information in a conversation through python dictionary user_data. Information of conversation are stored using user_data["relevant" name]= text. At the end of a conversation, the recording function is called in to produce the content in a pdf file.
 ```{python}
